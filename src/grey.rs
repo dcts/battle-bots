@@ -30,12 +30,25 @@ use battle_bots_engine::*;
 // Returns the position that's adjacent to the given one in the given direction, in the form (x, y)
 // eg. adjacent_position_in_direction(4, 5, Direction::Down) == (4, 6)
 pub fn adjacent_position_in_direction(x: usize, y: usize, direction: Direction) -> (usize, usize) {
-    (0, 0)
+    match direction {
+        Direction::Up => (x, y + 1),
+        Direction::Down => (x, y - 1),
+        Direction::Right => (x + 1, y),
+        Direction::Left => (x - 1, y),
+    }
 }
 
 // Returns whether there is a bot in the given position
 pub fn is_bot(game_state: &GameState, position: &Position) -> bool {
-    false
+    let result = game_state.bots.iter().map(|tuple| {
+        let (position, bot) = tuple;
+        println!("{}", &bot);
+        return tuple;
+    });
+    return false;
+    // any(|&x| {
+        
+    // })
 }
 
 // Returns the shortest way to rotate the "from" direction to get the "to" direction
