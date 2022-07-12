@@ -79,6 +79,10 @@ pub fn rotate_direction(direction: &Direction, rotation: &Rotation) -> Direction
     }
 }
 
+
+
+
+
 // ADD UNIT TESTS
 #[cfg(test)]
 mod tests {
@@ -86,23 +90,13 @@ mod tests {
 
     #[test]
     fn adjacent_position_in_direction_test() {
-        // UP    => y + 1
-        assert_eq!(adjacent_position_in_direction(4, 5, Direction::Up), (4, 6));
-        // DOWN  => y - 1
-        assert_eq!(
-            adjacent_position_in_direction(4, 5, Direction::Down),
-            (4, 4)
-        );
-        // RIGHT => x + 1
-        assert_eq!(
-            adjacent_position_in_direction(4, 5, Direction::Right),
-            (5, 5)
-        );
-        // LEFT  => x - 1
-        assert_eq!(
-            adjacent_position_in_direction(4, 5, Direction::Left),
-            (3, 5)
-        );
+        fn test_helper(x: usize, y: usize, dir: Direction, x_new: usize, y_new: usize) {
+            assert_eq!(adjacent_position_in_direction(x, y, dir), (x_new, y_new));
+        }   
+        test_helper(4, 5, Direction::Up, 4, 6);    // UP    => y + 1
+        test_helper(4, 5, Direction::Down, 4, 4);  // DOWN  => y - 1
+        test_helper(4, 5, Direction::Right, 5, 5); // RIGHT => x + 1
+        test_helper(4, 5, Direction::Left, 3, 5);  // LEFT  => x - 1
     }
 
     // #[test]
@@ -113,9 +107,9 @@ mod tests {
 
     #[test]
     fn shortest_rotation_test() {
-        fn test(from: &Direction, to: &Direction, rotation: Rotation) {
+        fn test_helper(from: &Direction, to: &Direction, target: Rotation) {
             let actual: Rotation = shortest_rotation(&from, &to);
-            let success: bool = match (actual, rotation) {
+            let success: bool = match (actual, target) {
                 (Rotation::Clockwise, Rotation::Clockwise) => true,
                 (Rotation::Counterclockwise, Rotation::Counterclockwise) => true,
                 _ => false,
@@ -123,42 +117,37 @@ mod tests {
             assert_eq!(success, true);
         }
         // clockwise cases
-        test(&Direction::Right, &Direction::Up, Rotation::Counterclockwise);
-        test(&Direction::Up, &Direction::Left, Rotation::Counterclockwise);
-        test(&Direction::Left, &Direction::Down, Rotation::Counterclockwise);
-        test(&Direction::Down, &Direction::Right, Rotation::Counterclockwise);
+        test_helper(&Direction::Right, &Direction::Up, Rotation::Counterclockwise);
+        test_helper(&Direction::Up, &Direction::Left, Rotation::Counterclockwise);
+        test_helper(&Direction::Left, &Direction::Down, Rotation::Counterclockwise);
+        test_helper(&Direction::Down, &Direction::Right, Rotation::Counterclockwise);
         // counter clockwise cases
-        test(&Direction::Up, &Direction::Right, Rotation::Clockwise);
-        test(&Direction::Right, &Direction::Down, Rotation::Clockwise);
-        test(&Direction::Down, &Direction::Left, Rotation::Clockwise);
-        test(&Direction::Left, &Direction::Up, Rotation::Clockwise);
+        test_helper(&Direction::Up, &Direction::Right, Rotation::Clockwise);
+        test_helper(&Direction::Right, &Direction::Down, Rotation::Clockwise);
+        test_helper(&Direction::Down, &Direction::Left, Rotation::Clockwise);
+        test_helper(&Direction::Left, &Direction::Up, Rotation::Clockwise);
     }
 
     #[test]
     fn rotate_direction_test() {
-        // TODO => make this terrible code DRY!
-        let actual: Direction = rotate_direction(&Direction::Up, &Rotation::Clockwise);
-        let mut success: bool = false;
-        println!("success = {}", success); // remove to see warning. Keep to avoid warning...
-        match actual {
-            Direction::Right => {
-                success = true;
-            }
-            _ => {
-                success = false;
-            }
+        fn test_helper(direction: &Direction, rotation: &Rotation, target: Direction) {
+            let actual: Direction = rotate_direction(&direction, &rotation);
+            let success: bool = match (actual, target) {
+                (Direction::Up, Direction::Up) => true,
+                (Direction::Down, Direction::Down) => true,
+                (Direction::Right, Direction::Right) => true,
+                (Direction::Left, Direction::Left) => true,
+                _ => false,
+            };
+            assert_eq!(success, true);
         }
-        assert_eq!(success, true);
-
-        let actual: Direction = rotate_direction(&Direction::Up, &Rotation::Counterclockwise);
-        match actual {
-            Direction::Left => {
-                success = true;
-            }
-            _ => {
-                success = false;
-            }
-        }
-        assert_eq!(success, true);
+        test_helper(&Direction::Up, &Rotation::Clockwise, Direction::Right);
+        test_helper(&Direction::Up, &Rotation::Counterclockwise, Direction::Left);
+        test_helper(&Direction::Down, &Rotation::Clockwise, Direction::Left);
+        test_helper(&Direction::Down, &Rotation::Counterclockwise, Direction::Right);
+        test_helper(&Direction::Right, &Rotation::Clockwise, Direction::Down);
+        test_helper(&Direction::Right, &Rotation::Counterclockwise, Direction::Up);
+        test_helper(&Direction::Left, &Rotation::Clockwise, Direction::Up);
+        test_helper(&Direction::Left, &Rotation::Counterclockwise, Direction::Down);
     }
 }
