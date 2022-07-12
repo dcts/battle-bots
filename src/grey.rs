@@ -26,8 +26,8 @@ use battle_bots_engine::*;
 // Direction::Left if (x as isize) - 1 >= 0 => (x - 1, y),
 
 // CONCLUSION
-// UP    => y + 1
-// DOWN  => y - 1
+// UP    => y + 1 => FIX: y - 1 (by Guillem)
+// DOWN  => y - 1 => FIX: y + 1 (by Guillem)
 // RIGHT => x + 1
 // LEFT  => x - 1
 */
@@ -36,8 +36,8 @@ use battle_bots_engine::*;
 // eg. adjacent_position_in_direction(4, 5, Direction::Down) == (4, 6)
 pub fn adjacent_position_in_direction(x: usize, y: usize, direction: Direction) -> (usize, usize) {
     match direction {
-        Direction::Up => (x, y + 1),
-        Direction::Down => (x, y - 1),
+        Direction::Up => (x, y - 1),
+        Direction::Down => (x, y + 1),
         Direction::Right => (x + 1, y),
         Direction::Left => (x - 1, y),
     }
@@ -93,8 +93,8 @@ mod tests {
         fn test_helper(x: usize, y: usize, dir: Direction, x_new: usize, y_new: usize) {
             assert_eq!(adjacent_position_in_direction(x, y, dir), (x_new, y_new));
         }   
-        test_helper(4, 5, Direction::Up, 4, 6);    // UP    => y + 1
-        test_helper(4, 5, Direction::Down, 4, 4);  // DOWN  => y - 1
+        test_helper(4, 5, Direction::Up, 4, 4);    // UP    => y + 1 => FIX: y - 1 (by Guillem)
+        test_helper(4, 5, Direction::Down, 4, 6);  // DOWN  => y - 1 => FIX: y + 1 (by Guillem)
         test_helper(4, 5, Direction::Right, 5, 5); // RIGHT => x + 1
         test_helper(4, 5, Direction::Left, 3, 5);  // LEFT  => x - 1
     }
