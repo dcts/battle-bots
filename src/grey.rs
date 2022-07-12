@@ -104,7 +104,6 @@ mod tests {
     //     // TODO
     // }
 
-
     #[test]
     fn shortest_rotation_test() {
         fn test_helper(from: &Direction, to: &Direction, target: Rotation) {
