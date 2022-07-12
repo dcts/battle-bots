@@ -117,15 +117,15 @@ mod tests {
             assert_eq!(success, true);
         }
         // clockwise cases
-        test_helper(&Direction::Right, &Direction::Up, Rotation::Counterclockwise);
-        test_helper(&Direction::Up, &Direction::Left, Rotation::Counterclockwise);
-        test_helper(&Direction::Left, &Direction::Down, Rotation::Counterclockwise);
-        test_helper(&Direction::Down, &Direction::Right, Rotation::Counterclockwise);
-        // counter clockwise cases
         test_helper(&Direction::Up, &Direction::Right, Rotation::Clockwise);
         test_helper(&Direction::Right, &Direction::Down, Rotation::Clockwise);
         test_helper(&Direction::Down, &Direction::Left, Rotation::Clockwise);
         test_helper(&Direction::Left, &Direction::Up, Rotation::Clockwise);
+        // counter clockwise cases
+        test_helper(&Direction::Right, &Direction::Up, Rotation::Counterclockwise);
+        test_helper(&Direction::Up, &Direction::Left, Rotation::Counterclockwise);
+        test_helper(&Direction::Left, &Direction::Down, Rotation::Counterclockwise);
+        test_helper(&Direction::Down, &Direction::Right, Rotation::Counterclockwise);
     }
 
     #[test]
