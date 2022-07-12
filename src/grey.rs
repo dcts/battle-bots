@@ -1,5 +1,10 @@
 use battle_bots_engine::*;
 
+
+/**
+ * This is a secret message
+ * did you already write a note for PJ?
+ */
 /**
  * The grey bot is broken! It's using all the functions below, but they seem not to be implemented correctly
  *
@@ -43,7 +48,7 @@ pub fn is_bot(game_state: &GameState, position: &Position) -> bool {
     game_state
         .bots
         .iter()
-        .any(|(bot_position, _)| bot_position.x == position.x && bot_position.y == position.y )
+        .any(|(pos, _)| pos.x == position.x && pos.y == position.y )
 }
 
 // Returns the shortest way to rotate the "from" direction to get the "to" direction
@@ -62,7 +67,16 @@ pub fn shortest_rotation(from: &Direction, to: &Direction) -> Rotation {
 // Rotate the given direction with the given rotation
 // eg. rotate_direction(Direction::Up, Rotation::Clockwise) == Direction::Right
 pub fn rotate_direction(direction: &Direction, rotation: &Rotation) -> Direction {
-    Direction::Down
+    match (direction, rotation) {
+        (Direction::Up, Rotation::Clockwise) => Direction::Right,
+        (Direction::Up, Rotation::Counterclockwise) => Direction::Left,
+        (Direction::Down, Rotation::Clockwise) => Direction::Left,
+        (Direction::Down, Rotation::Counterclockwise) => Direction::Right,
+        (Direction::Left, Rotation::Clockwise) => Direction::Up,
+        (Direction::Left, Rotation::Counterclockwise) => Direction::Down,
+        (Direction::Right, Rotation::Clockwise) => Direction::Down,
+        (Direction::Right, Rotation::Counterclockwise) => Direction::Up,
+    }
 }
 
 // ADD UNIT TESTS
@@ -96,45 +110,28 @@ mod tests {
     //     // TODO
     // }
 
+
     #[test]
     fn shortest_rotation_test() {
-        // TODO => make test_shortcut_clockwise and test_shortcut_counterclockwise DRY
-        fn test_shortcut_clockwise(from: &Direction, to: &Direction) {
+        fn test(from: &Direction, to: &Direction, rotation: Rotation) {
             let actual: Rotation = shortest_rotation(&from, &to);
-            let mut success: bool = false;
-            println!("success = {}", success); // remove to see warning. Keep to avoid warning...
-            match actual {
-                Rotation::Clockwise => {
-                    success = true;
-                }
-                _ => {
-                    success = false;
-                }
-            }
+            let success: bool = match (actual, rotation) {
+                (Rotation::Clockwise, Rotation::Clockwise) => true,
+                (Rotation::Counterclockwise, Rotation::Counterclockwise) => true,
+                _ => false,
+            };
             assert_eq!(success, true);
         }
-        fn test_shortcut_counterclockwise(from: &Direction, to: &Direction) {
-            let actual: Rotation = shortest_rotation(&from, &to);
-            let mut success: bool = false;
-            println!("success = {}", success); // remove to see warning. Keep to avoid warning...
-            match actual {
-                Rotation::Counterclockwise => {
-                    success = true;
-                }
-                _ => {
-                    success = false;
-                }
-            }
-            assert_eq!(success, true);
-        }
-        test_shortcut_clockwise(&Direction::Up, &Direction::Right);
-        test_shortcut_clockwise(&Direction::Right, &Direction::Down);
-        test_shortcut_clockwise(&Direction::Down, &Direction::Left);
-        test_shortcut_clockwise(&Direction::Left, &Direction::Up);
-        test_shortcut_counterclockwise(&Direction::Right, &Direction::Up);
-        test_shortcut_counterclockwise(&Direction::Up, &Direction::Left);
-        test_shortcut_counterclockwise(&Direction::Left, &Direction::Down);
-        test_shortcut_counterclockwise(&Direction::Down, &Direction::Right);
+        // clockwise cases
+        test(&Direction::Right, &Direction::Up, Rotation::Counterclockwise);
+        test(&Direction::Up, &Direction::Left, Rotation::Counterclockwise);
+        test(&Direction::Left, &Direction::Down, Rotation::Counterclockwise);
+        test(&Direction::Down, &Direction::Right, Rotation::Counterclockwise);
+        // counter clockwise cases
+        test(&Direction::Up, &Direction::Right, Rotation::Clockwise);
+        test(&Direction::Right, &Direction::Down, Rotation::Clockwise);
+        test(&Direction::Down, &Direction::Left, Rotation::Clockwise);
+        test(&Direction::Left, &Direction::Up, Rotation::Clockwise);
     }
 
     #[test]
